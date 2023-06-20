@@ -13,6 +13,8 @@ app.get('/', welcomeHandler);
 function welcomeHandler(req, res) {
     res.status(200).send('hi user');
 }
+
+
 function start(port) {
     app.listen(port, () => {
         console.log(`server is up and listen on ${port}`)

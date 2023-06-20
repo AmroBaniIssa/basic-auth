@@ -1,13 +1,13 @@
 const express = require('express');
 const usersRouter = express.Router();
-const { UserModel } = require('../models/index');
+const { Users } = require('../models/index');
 const base64 = require('base-64');
 const bcrypt = require('bcrypt');
 
 usersRouter.post('/signup', async (req, res) => {
     let username = req.body.username;
     let hashedPassword = await bcrypt.hash(req.body.password, 5);
-    const record = await UserModel.create({
+    const record = await Users.create({
         username: username,
         password: hashedPassword
     });
@@ -19,12 +19,10 @@ usersRouter.get('/signin', async (req, res) => {
     // Basic c2hpaGFiOjEyMw==
     if (req.headers.authorization) {
         let headersParts = req.headers.authorization.split(" ");// ['Basic','c2hpaGFiOjEyMw==']
-        // let encodedValue = headersParts[1];
-        let encodedValue = headersParts.pop();
+        let encodedValue = headersParts[1];
         let decodedValue = base64.decode(encodedValue);//username:password
         let [username, password] = decodedValue.split(":");
-        const user = await UserModel.findOne({ where: { username: username } })
-        // console.log('user from DB ', user);
+        const user = await Users.findOne({ where: { username: username } })
         const validUser = await bcrypt.compare(password, user.password);
         if (validUser) {
             res.status(200).json({ user });
@@ -36,6 +34,12 @@ usersRouter.get('/signin', async (req, res) => {
         console.log('no user name or password')
     }
 });
+
+usersRouter.get('/users', allUsers);
+async function allUsers(req, res) {
+    let users= await Users.findAll()
+    res.status(200).send(users);
+}
 
 
 
