@@ -2,8 +2,7 @@
 const express = require("express");
 const app = express();
 const usersRouter = require('./routes/users.route');
-const base64 = require('base-64');
-const bcrypt = require('bcrypt');
+
 app.use(express.json());
 app.use(usersRouter);
 
