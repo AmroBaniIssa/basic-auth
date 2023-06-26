@@ -1,10 +1,12 @@
 'use strict';
-require("dotenv").config();
+require('dotenv').config();
+const port = process.env.PORT;
+const server = require('./src/server');
+const { sequelize } = require('./src/models/index');
 
-let port = process.env.PORT || 3030;
-const app = require('./src/server');
-const { db } = require('./src/models/index');
-db.sync()
+sequelize.sync()
     .then(() => {
-        app.start(port);
+        server.listen(port, () => {
+            console.log(`server up on port ${port}`)
+        })
     })

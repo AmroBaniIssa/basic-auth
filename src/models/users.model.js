@@ -17,12 +17,31 @@ const users = (sequelize, DataTypes) =>
         },
         token: {
             type: DataTypes.VIRTUAL,
+        },
+        role: {
+            type: DataTypes.ENUM('admin', 'writer', 'editor', 'user'),
+            defaultValue: 'user'
+        },
+        capabilities: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                const acl = {
+                    user: ['read'],
+                    writer: ['read', 'create'],
+                    editor: ['read', 'create', 'update'],
+                    admin: ['read', 'create', 'update', 'delete']
+                }
+                return acl[this.role];
+            }
         }
+
     })
 
     users.authBasic = async function (username, password) {
+        console.log("**",username,password);
         const user = await users.findOne({ where: { username: username } });
         const validUser = await bcrypt.compare(password, user.password);
+        console.log(validUser);
         if (validUser) {
             let newToken = jwt.sign({ username: user.username}, SECRET);
             user.token = newToken;

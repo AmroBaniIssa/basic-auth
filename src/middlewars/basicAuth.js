@@ -8,12 +8,13 @@ function basic(req, res, next) {
         let encodedValue = headersParts[1];
         let decodedValue = base64.decode(encodedValue);//username:password
         let [username, password] = decodedValue.split(":");
+        console.log(username,password);
         Users.authBasic(username, password)
             .then((data) => {
                 req.user = data;
                 next();
             }).catch((error) => {
-                next('invalid Login');
+                next('invalid Login*');
             })
     }
 }
