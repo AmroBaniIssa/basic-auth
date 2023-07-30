@@ -23,9 +23,16 @@ app.post('/signup', async (req, res) => {
 app.post('/signin', basic, loginHandler);
 
 app.get('/secrets', bearer, secretsHandler)
+app.get('/', bearer, homeHandler)
+
 
 function loginHandler(req, res) {
     res.status(200).json(req.user);
+
+
+}
+function homeHandler(req, res) {
+    res.status(200).json("welcome");
 
 
 }
